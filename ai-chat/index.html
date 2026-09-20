@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aurora · AI 聊天</title>
+<meta name="description" content="纯静态的在线 AI 对话页面，无需安装、无需登录">
+<style>
+:root{
+  --bg:#F7F6F3; --panel:#FFFFFF; --ink:#2C2C2A; --ink2:#5F5E5A; --ink3:#888780;
+  --line:#E5E3DD; --blue:#185FA5; --blue-soft:#E6F1FB; --red:#A32D2D; --radius:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif;
+  font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased;
+}
+.app{max-width:760px;height:100vh;margin:0 auto;display:flex;flex-direction:column}
+
+.topbar{
+  flex:none;height:56px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;border-bottom:1px solid var(--line);background:var(--panel);
+}
+.topbar .left{display:flex;align-items:center;gap:9px}
+.topbar .dot{width:9px;height:9px;border-radius:50%;background:#1D9E75}
+.topbar h1{font-size:15px;font-weight:600}
+.topbar .model{font-size:12px;color:var(--ink3)}
+.link{
+  border:none;background:none;color:var(--ink3);font-size:13px;cursor:pointer;
+  font-family:inherit;padding:4px 6px;border-radius:6px;
+}
+.link:hover{color:var(--blue);background:var(--blue-soft)}
+
+.banner{
+  display:none;padding:9px 20px;font-size:13px;line-height:1.5;
+  background:#FCEBEB;color:var(--red);border-bottom:1px solid #F7C1C1;
+}
+
+.stream{flex:1;overflow-y:auto;padding:26px 20px;scroll-behavior:smooth}
+.empty{text-align:center;color:var(--ink3);padding:90px 20px}
+.empty h3{font-size:17px;color:var(--ink2);margin-bottom:8px;font-weight:600}
+.empty p{font-size:13.5px}
+
+.msg{display:flex;margin-bottom:20px;gap:12px}
+.msg.user{flex-direction:row-reverse}
+.avatar{
+  width:32px;height:32px;flex:none;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:600;color:#fff;
+}
+.msg.user .avatar{background:var(--blue)}
+.msg.ai .avatar{background:#5F5E5A}
+.bubble{max-width:78%;min-width:0}
+.bubble .body{
+  padding:12px 16px;border-radius:var(--radius);font-size:14.5px;word-break:break-word;
+}
+.msg.user .body{background:var(--blue-soft);color:#0C447C;border-top-right-radius:4px}
+.msg.ai .body{background:var(--panel);border:1px solid var(--line);border-top-left-radius:4px}
+.bubble .body pre{
+  background:#F1EFE8;border:1px solid var(--line);border-radius:8px;
+  padding:10px 12px;overflow-x:auto;margin:8px 0;font-size:13px;line-height:1.5;
+}
+.bubble .body code{
+  font-family:ui-monospace,Consolas,monospace;font-size:13px;
+  background:#F1EFE8;padding:1px 5px;border-radius:4px;
+}
+.bubble .body pre code{background:none;padding:0}
+.caret{
+  display:inline-block;width:7px;height:15px;background:var(--blue);
+  vertical-align:text-bottom;animation:blink 1s steps(2,start) infinite;
+}
+@keyframes blink{to{visibility:hidden}}
+
+.composer{flex:none;border-top:1px solid var(--line);background:var(--panel);padding:14px 20px 16px}
+.composer .inner{display:flex;gap:10px;align-items:flex-end}
+textarea{
+  flex:1;resize:none;border:1px solid var(--line);border-radius:var(--radius);
+  padding:11px 14px;font-family:inherit;font-size:14.5px;line-height:1.6;
+  max-height:140px;outline:none;background:var(--panel);color:var(--ink);
+}
+textarea:focus{border-color:var(--blue)}
+.send{
+  width:44px;height:44px;flex:none;border:none;border-radius:var(--radius);
+  background:var(--blue);color:#fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+}
+.send:hover{background:#0C447C}
+.send svg{width:18px;height:18px}
+.tip{margin-top:8px;font-size:11.5px;color:var(--ink3);text-align:center}
+
+@media(max-width:640px){
+  .bubble{max-width:88%}
+  .app{max-width:100%}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="topbar">
+    <div class="left">
+      <span class="dot"></span>
+      <h1>Aurora · AI 聊天</h1>
+      <span class="model">纯静态 · 打开即用</span>
+    </div>
+    <div class="right">
+      <button class="link" id="clear">清空对话</button>
+    </div>
+  </div>
+
+  <div class="banner" id="banner"></div>
+
+  <div class="stream" id="stream">
+    <div class="empty" id="empty">
+      <h3>开始一段对话</h3>
+      <p>这个页面是纯静态的，不需要安装任何东西，也不需要登录。</p>
+    </div>
+  </div>
+
+  <div class="composer">
+    <div class="inner">
+      <textarea id="input" rows="1" placeholder="输入消息，Enter 发送，Shift + Enter 换行"></textarea>
+      <button class="send" id="send" title="发送">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+    <div class="tip">Enter 发送 · Shift + Enter 换行 · 生成中再次点击可停止</div>
+  </div>
+
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const stream = $('stream'), input = $('input'), sendBtn = $('send');
+
+const API = 'https://text.pollinations.ai/openai';
+const MODEL = 'openai';
+const MEMORY = 5;          // 携带的历史轮数
+
+let messages = [];
+let busy = false;
+let controller = null;
+
+function escapeHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function render(text){
+  let out = escapeHtml(text);
+  out = out.replace(/```(\w*)\n?([\s\S]*?)```/g, (m, lang, code) =>
+    '<pre><code>' + code.replace(/\n$/, '') + '</code></pre>');
+  out = out.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+  out = out.replace(/\*\*([^*\n]+)\*\*/g, '<b>$1</b>');
+  return out.replace(/\n/g, '<br>');
+}
+
+function scrollBottom(){ stream.scrollTop = stream.scrollHeight; }
+
+function showBanner(text){
+  const box = $('banner');
+  box.textContent = text;
+  box.style.display = 'block';
+}
+
+function addMessage(role){
+  const empty = $('empty');
+  if (empty) empty.remove();
+
+  const wrap = document.createElement('div');
+  wrap.className = 'msg ' + (role === 'user' ? 'user' : 'ai');
+  wrap.innerHTML =
+    '<div class="avatar">' + (role === 'user' ? '我' : 'AI') + '</div>' +
+    '<div class="bubble"><div class="body"></div></div>';
+  stream.appendChild(wrap);
+  scrollBottom();
+  return wrap.querySelector('.body');
+}
+
+function stop(){ if (controller) controller.abort(); }
+
+async function send(){
+  if (busy){ stop(); return; }
+  const text = input.value.trim();
+  if (!text) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+
+  messages.push({role:'user', content:text});
+  addMessage('user').innerHTML = render(text);
+
+  const aiBody = addMessage('ai');
+  aiBody.innerHTML = '<span class="caret"></span>';
+
+  busy = true;
+  const history = messages.slice(-(MEMORY * 2 + 1));
+
+  controller = new AbortController();
+  let answer = '';
+
+  try{
+    const res = await fetch(API, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      signal: controller.signal,
+      body: JSON.stringify({ model: MODEL, messages: history, stream: true })
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder('utf-8');
+    let buffer = '';
+
+    while (true){
+      const {done, value} = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, {stream:true});
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+
+      for (const line of lines){
+        const trimmed = line.trim();
+        if (!trimmed.startsWith('data:')) continue;
+        const payload = trimmed.slice(5).trim();
+        if (!payload || payload === '[DONE]') continue;
+        try{
+          const obj = JSON.parse(payload);
+          const piece = obj.choices?.[0]?.delta?.content || '';
+          if (piece){
+            answer += piece;
+            aiBody.innerHTML = render(answer) + '<span class="caret"></span>';
+            scrollBottom();
+          }
+        }catch(e){ /* 忽略无法解析的分片 */ }
+      }
+    }
+
+    aiBody.innerHTML = render(answer) || '（没有返回内容）';
+    if (answer) messages.push({role:'assistant', content:answer});
+  }catch(err){
+    if (err.name === 'AbortError'){
+      aiBody.innerHTML = render(answer) || '<span style="color:#888780">已停止生成</span>';
+      if (answer) messages.push({role:'assistant', content:answer});
+    } else {
+      showBanner('请求失败：无法连接模型服务，请检查网络后重试。');
+      aiBody.innerHTML = '<span style="color:#A32D2D">请求失败，请稍后重试。</span>';
+    }
+  }finally{
+    busy = false;
+    controller = null;
+    input.focus();
+  }
+}
+
+sendBtn.addEventListener('click', send);
+input.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); send(); }
+});
+input.addEventListener('input', () => {
+  input.style.height = 'auto';
+  input.style.height = Math.min(input.scrollHeight, 140) + 'px';
+});
+$('clear').addEventListener('click', () => {
+  messages = [];
+  stream.innerHTML = '<div class="empty" id="empty"><h3>开始一段对话</h3>' +
+                     '<p>这个页面是纯静态的，不需要安装任何东西，也不需要登录。</p></div>';
+});
+
+input.focus();
+</script>
+</body>
+</html>

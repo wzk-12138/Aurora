@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>破局指南 | 游戏攻略站</title>
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;700;900&display=swap');
+
+		:root {
+			--ink: #f5f2e9;
+			--muted: #9ba09a;
+			--line: rgba(245, 242, 233, 0.13);
+			--panel: #141816;
+			--panel-light: #1c211e;
+			--lime: #c7f36a;
+			--orange: #ff8a4c;
+			--blue: #77d7e8;
+		}
+
+		* { box-sizing: border-box; }
+		html { scroll-behavior: smooth; }
+		body {
+			margin: 0;
+			color: var(--ink);
+			background: #0c0f0d;
+			font-family: 'Noto Sans SC', sans-serif;
+		}
+		body::before {
+			content: '';
+			position: fixed;
+			inset: 0;
+			z-index: -1;
+			opacity: .27;
+			background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+			background-size: 48px 48px;
+			mask-image: linear-gradient(to bottom, black, transparent 85%);
+		}
+		a { color: inherit; text-decoration: none; }
+		button { font: inherit; }
+
+		.shell { width: min(1180px, calc(100% - 40px)); margin: auto; }
+		.topbar {
+			border-bottom: 1px solid var(--line);
+			height: 76px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+		.brand { display: flex; align-items: center; gap: 12px; font-family: 'Barlow Condensed', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: 1px; }
+		.brand-mark { width: 32px; height: 32px; display: grid; place-items: center; color: #0c0f0d; background: var(--lime); clip-path: polygon(0 0, 100% 0, 100% 72%, 72% 100%, 0 100%); font-weight: 900; }
+		nav { display: flex; gap: 28px; color: var(--muted); font-size: 14px; }
+		nav a:first-child, nav a:hover { color: var(--lime); }
+		.student-id { border: 1px solid var(--line); padding: 8px 12px; color: var(--lime); font: 600 13px 'Barlow Condensed', sans-serif; letter-spacing: 1px; }
+
+		.hero { min-height: 470px; display: grid; grid-template-columns: 1.1fr .9fr; align-items: center; gap: 70px; padding: 72px 0 60px; }
+		.eyebrow { display: flex; align-items: center; gap: 10px; color: var(--lime); font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+		.eyebrow::before { content: ''; width: 25px; height: 2px; background: var(--lime); }
+		h1 { max-width: 650px; margin: 18px 0; font-family: 'Barlow Condensed', sans-serif; font-size: clamp(62px, 8vw, 108px); line-height: .88; letter-spacing: -1px; text-transform: uppercase; }
+		h1 em { color: var(--lime); font-style: normal; }
+		.hero-copy { max-width: 490px; color: var(--muted); font-size: 16px; line-height: 1.8; }
+		.hero-actions { display: flex; gap: 12px; margin-top: 28px; }
+		.button { display: inline-flex; align-items: center; gap: 10px; border: 1px solid var(--lime); padding: 13px 18px; color: #0c0f0d; background: var(--lime); font-size: 14px; font-weight: 900; cursor: pointer; transition: transform .2s, background .2s; }
+		.button:hover { transform: translateY(-3px); background: #dcff91; }
+		.button.secondary { color: var(--ink); border-color: var(--line); background: transparent; }
+		.button.secondary:hover { background: var(--panel-light); }
+
+		.hero-art { position: relative; min-height: 320px; display: grid; place-items: center; }
+		.hero-art::before { content: ''; position: absolute; width: 285px; height: 285px; border: 1px solid rgba(199,243,106,.38); transform: rotate(45deg); }
+		.hero-art::after { content: '攻略 / 2025'; position: absolute; right: 0; top: 8px; color: var(--orange); font: 600 13px 'Barlow Condensed', sans-serif; letter-spacing: 2px; transform: rotate(90deg); }
+		.console { position: relative; width: 220px; height: 145px; padding: 15px; border: 2px solid var(--ink); background: var(--panel-light); transform: rotate(-7deg); box-shadow: 18px 18px 0 var(--orange); }
+		.console-screen { height: 100%; display: grid; place-items: center; border: 1px solid var(--lime); color: var(--lime); font: 700 40px 'Barlow Condensed', sans-serif; letter-spacing: 3px; }
+		.d-pad { position: absolute; left: 34px; bottom: 25px; width: 26px; height: 8px; background: var(--ink); box-shadow: 9px 0 0 -3px var(--ink); }
+		.d-pad::after { content: ''; position: absolute; left: 9px; top: -9px; width: 8px; height: 26px; background: var(--ink); }
+		.dot { position: absolute; right: 32px; bottom: 28px; width: 9px; height: 9px; border-radius: 50%; background: var(--orange); box-shadow: -15px 7px 0 var(--lime); }
+
+		.section-head { display: flex; justify-content: space-between; align-items: end; margin-bottom: 20px; }
+		.section-title { margin: 0; font-family: 'Barlow Condensed', sans-serif; font-size: 37px; text-transform: uppercase; }
+		.section-note { color: var(--muted); font-size: 13px; }
+		.filter-row { display: flex; gap: 8px; margin-bottom: 22px; overflow-x: auto; }
+		.filter { border: 1px solid var(--line); padding: 9px 16px; color: var(--muted); background: transparent; white-space: nowrap; cursor: pointer; font-size: 13px; }
+		.filter.active, .filter:hover { border-color: var(--lime); color: var(--lime); }
+		.guides { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding-bottom: 70px; }
+		.guide { min-height: 220px; position: relative; display: flex; flex-direction: column; justify-content: end; overflow: hidden; padding: 22px; border: 1px solid var(--line); background: var(--panel); transition: transform .2s, border-color .2s; }
+		.guide:hover { transform: translateY(-5px); border-color: var(--lime); }
+		.guide::before { content: ''; position: absolute; inset: 0; opacity: .18; background: repeating-linear-gradient(135deg, transparent 0 13px, var(--accent) 14px 16px, transparent 17px 29px); }
+		.guide > * { position: relative; }
+		.guide:nth-child(1) { --accent: var(--orange); }
+		.guide:nth-child(2) { --accent: var(--blue); }
+		.guide:nth-child(3) { --accent: var(--lime); }
+		.tag { width: fit-content; margin-bottom: auto; padding: 5px 8px; color: #0c0f0d; background: var(--accent); font-size: 11px; font-weight: 900; }
+		.guide h3 { margin: 18px 0 6px; font-size: 20px; }
+		.guide p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+		.guide-meta { display: flex; justify-content: space-between; margin-top: 17px; color: var(--muted); font: 12px 'Barlow Condensed', sans-serif; letter-spacing: 1px; }
+
+		.tip-strip { display: grid; grid-template-columns: 1fr 2fr; gap: 35px; padding: 26px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+		.tip-label { color: var(--orange); font: 700 16px 'Barlow Condensed', sans-serif; letter-spacing: 1px; }
+		.tip-content { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+		.tip-content p { margin: 0; color: var(--ink); font-size: 15px; line-height: 1.7; }
+		.tip-content button { border: 0; color: var(--lime); background: transparent; cursor: pointer; white-space: nowrap; }
+		footer { display: flex; justify-content: space-between; padding: 28px 0; color: var(--muted); font-size: 12px; }
+		footer strong { color: var(--lime); }
+
+		@media (max-width: 760px) {
+			.shell { width: min(100% - 28px, 600px); }
+			.topbar { height: 64px; }
+			nav { display: none; }
+			.hero { min-height: auto; grid-template-columns: 1fr; gap: 16px; padding: 58px 0 35px; }
+			h1 { font-size: clamp(62px, 19vw, 100px); }
+			.hero-art { min-height: 250px; transform: scale(.8); }
+			.guides { grid-template-columns: 1fr; }
+			.tip-strip { grid-template-columns: 1fr; gap: 12px; }
+			footer { display: block; line-height: 2; }
+		}
+	</style>
+</head>
+<body>
+	<header class="shell topbar">
+		<a class="brand" href="#top"><span class="brand-mark">P</span>破局指南</a>
+		<nav aria-label="主导航"><a href="#top">首页</a><a href="#guides">热门攻略</a><a href="#tip">技巧速递</a></nav>
+		<div class="student-id">ID · F25011434</div>
+	</header>
+
+	<main id="top" class="shell">
+		<section class="hero">
+			<div>
+				<div class="eyebrow">GAME GUIDE / LEVEL UP</div>
+				<h1>玩得更聪明，<br><em>赢得更漂亮</em></h1>
+				<p class="hero-copy">从新手入门到高阶配装，把每一次失败都变成下一次通关的情报。这里收集真正有用、可以马上上手的游戏攻略。</p>
+				<div class="hero-actions"><a class="button" href="#guides">浏览攻略 <span>↗</span></a><a class="button secondary" href="#tip">今日技巧</a></div>
+			</div>
+			<div class="hero-art" aria-label="游戏手柄装饰图形"><div class="console"><div class="console-screen">GG</div><div class="d-pad"></div><div class="dot"></div></div></div>
+		</section>
+
+		<section id="guides">
+			<div class="section-head"><h2 class="section-title">精选攻略</h2><span class="section-note">03 / HOT PICKS</span></div>
+			<div class="filter-row" role="group" aria-label="攻略分类"><button class="filter active" data-filter="all">全部</button><button class="filter" data-filter="rpg">角色扮演</button><button class="filter" data-filter="action">动作冒险</button><button class="filter" data-filter="online">多人联机</button></div>
+			<div class="guides">
+				<article class="guide" data-category="rpg"><span class="tag">角色扮演</span><h3>开局资源怎么分配？</h3><p>前 10 小时不走弯路的升级路线，稀有材料优先给谁。</p><div class="guide-meta"><span>阅读 8 min</span><span>01 / 03</span></div></article>
+				<article class="guide" data-category="action"><span class="tag">动作冒险</span><h3>Boss 读招与反击节奏</h3><p>拆解三种高频攻击模式，找到属于你的完美闪避窗口。</p><div class="guide-meta"><span>阅读 12 min</span><span>02 / 03</span></div></article>
+				<article class="guide" data-category="online"><span class="tag">多人联机</span><h3>四人队伍的黄金配合</h3><p>坦克、输出与辅助的站位逻辑，让每一波团战更稳定。</p><div class="guide-meta"><span>阅读 6 min</span><span>03 / 03</span></div></article>
+			</div>
+		</section>
+
+		<section id="tip" class="tip-strip"><div class="tip-label">◈ 今日技巧 / DAILY TIP</div><div class="tip-content"><p id="tip-text">卡关时先别急着换装备，观察 Boss 的起手动作，节奏本身就是最强的提示。</p><button id="next-tip" type="button">换一条 →</button></div></section>
+	</main>
+
+	<footer class="shell"><span>© 2025 破局指南 · 游戏攻略站</span><span>Designed by <strong>F25011434</strong></span></footer>
+	<script>
+		const filters = document.querySelectorAll('.filter');
+		const guides = document.querySelectorAll('.guide');
+		filters.forEach((filter) => {
+			filter.addEventListener('click', () => {
+				filters.forEach((item) => item.classList.remove('active'));
+				filter.classList.add('active');
+				const category = filter.dataset.filter;
+				guides.forEach((guide) => { guide.style.display = category === 'all' || guide.dataset.category === category ? 'flex' : 'none'; });
+			});
+		});
+		const tips = ['卡关时先别急着换装备，观察 Boss 的起手动作，节奏本身就是最强的提示。', '把最常用的技能放在最顺手的按键上，减少思考，增加反应。', '探索地图时记住地标位置，回头路往往藏着比主线更好的奖励。'];
+		let tipIndex = 0;
+		document.querySelector('#next-tip').addEventListener('click', () => { tipIndex = (tipIndex + 1) % tips.length; document.querySelector('#tip-text').textContent = tips[tipIndex]; });
+	</script>
+</body>
+</html>

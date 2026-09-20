@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aurora · 作品与在线演示</title>
+<style>
+:root{
+  --bg:#F7F6F3; --card:#FFFFFF; --ink:#2C2C2A; --ink2:#5F5E5A; --ink3:#888780;
+  --line:#E5E3DD; --blue:#185FA5; --blue-soft:#E6F1FB;
+  --teal:#0F6E56; --teal-soft:#E1F5EE; --amber:#854F0B; --amber-soft:#FAEEDA;
+  --radius:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif;
+  font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:980px;margin:0 auto;padding:0 24px 72px}
+
+header{padding:68px 0 44px;border-bottom:1px solid var(--line);margin-bottom:44px}
+.kicker{
+  display:inline-block;font-size:13px;letter-spacing:.08em;color:var(--blue);
+  background:var(--blue-soft);border-radius:999px;padding:5px 14px;margin-bottom:18px;
+}
+h1{font-size:32px;font-weight:600;letter-spacing:-.01em;line-height:1.3;margin-bottom:12px}
+.lede{font-size:16px;color:var(--ink2);max-width:620px}
+.meta{margin-top:20px;font-size:13px;color:var(--ink3)}
+
+.grid{display:grid;grid-template-columns:1fr;gap:20px}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:28px 26px;display:flex;flex-direction:column;gap:14px;
+}
+.card .head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.card h2{font-size:19px;font-weight:600}
+.tag{font-size:12px;padding:4px 11px;border-radius:6px;font-weight:500;white-space:nowrap}
+.tag.live{background:var(--teal-soft);color:var(--teal)}
+.tag.static{background:var(--blue-soft);color:var(--blue)}
+.tag.doc{background:var(--amber-soft);color:var(--amber)}
+.card p{font-size:14px;color:var(--ink2)}
+.card ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.card li{font-size:13.5px;color:var(--ink2);display:flex;gap:10px}
+.card li b{color:var(--ink);font-weight:600;flex:none;min-width:64px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+.btn{
+  display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:9px;
+  font-size:14px;text-decoration:none;border:1px solid var(--line);color:var(--ink);
+  background:var(--card);transition:.15s;
+}
+.btn:hover{border-color:var(--blue);color:var(--blue)}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.primary:hover{background:#0C447C;color:#fff}
+.url{
+  font-family:ui-monospace,Consolas,monospace;font-size:13px;color:var(--ink2);
+  background:#F1EFE8;border:1px solid var(--line);border-radius:8px;
+  padding:10px 14px;overflow-x:auto;white-space:nowrap;
+}
+.note{
+  font-size:13px;color:var(--ink2);background:#FAFAF8;border:1px dashed var(--line);
+  border-radius:10px;padding:13px 16px;margin-top:6px;
+}
+footer{
+  border-top:1px solid var(--line);margin-top:52px;padding-top:24px;
+  font-size:13px;color:var(--ink3);
+}
+@media(max-width:640px){ h1{font-size:25px} .card{padding:22px 18px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <span class="kicker">Aurora</span>
+    <h1>作品与在线演示</h1>
+    <p class="lede">一个本地大模型实践与网页作品的集合。聊天助手跑在作者本机的 Ollama 上，网页作品为纯静态页面。</p>
+    <p class="meta">更新于 2026 年 9 月</p>
+  </header>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="head">
+        <h2>AI 聊天助手</h2>
+        <span class="tag live">在线可体验</span>
+      </div>
+      <p>打开网页就能对话的 AI 助手，支持流式输出与多轮上下文记忆。页面本身是纯静态文件，模型由云端提供，不需要安装任何东西。</p>
+      <ul>
+        <li><b>形式</b>单文件 HTML，纯静态，无后端依赖</li>
+        <li><b>功能</b>流式打字、多轮记忆、可中断生成</li>
+        <li><b>访问</b>打开链接即用，无需注册登录</li>
+      </ul>
+      <div class="url">https://97ea2cc954c24078b2f0be7e45e6d48d.app.workbuddy.host</div>
+      <div class="actions">
+        <a class="btn primary" href="https://97ea2cc954c24078b2f0be7e45e6d48d.app.workbuddy.host" target="_blank" rel="noopener">打开聊天助手</a>
+        <a class="btn" href="ai-chat/index.html">查看页面源码</a>
+      </div>
+      <div class="note">页面源码也在本仓库 ai-chat/ 目录下，可直接打开，或部署到任意静态平台。</div>
+    </div>
+
+    <div class="card">
+      <div class="head">
+        <h2>网站与应用自动部署方式全览</h2>
+        <span class="tag doc">静态页面</span>
+      </div>
+      <p>把自动部署这件事讲清楚：从一次代码推送到线上生效的四步链路，按项目形态划分的三条路线，常见平台的横向对比，以及四种发布触发方式。</p>
+      <ul>
+        <li><b>内容</b>部署链路、路线选择、平台对比、触发方式</li>
+        <li><b>形式</b>单文件 HTML，无外部依赖，响应式布局</li>
+      </ul>
+      <div class="actions">
+        <a class="btn primary" href="deploy-guide/index.html">查看页面</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="head">
+        <h2>破局指南 · 游戏攻略站</h2>
+        <span class="tag static">静态页面</span>
+      </div>
+      <p>暗色主题的游戏攻略站点页面，采用网格化排版与高对比配色，用于展示内容聚合型页面的布局方案。</p>
+      <ul>
+        <li><b>风格</b>深色背景、荧光强调色、卡片网格</li>
+        <li><b>形式</b>单文件 HTML，响应式布局</li>
+      </ul>
+      <div class="actions">
+        <a class="btn primary" href="game-guide/index.html">查看页面</a>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    本页与各作品均为静态文件，可直接部署到任意静态托管平台。
+  </footer>
+
+</div>
+</body>
+</html>
