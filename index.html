@@ -169,7 +169,7 @@ const FALLBACK = [];
 
 function render(repos, live) {
   // 简历仓库自身不作为作品项目列出
-  const mine = repos.filter(r => !r.fork && r.name !== "Aurora");
+  const mine = repos.filter(r => !r.fork && r.name !== "resume");
   if (!mine.length) {
     repoBox.innerHTML = '<div class="empty">暂无公开仓库，去 GitHub 创建第一个项目吧。</div>';
   } else {
